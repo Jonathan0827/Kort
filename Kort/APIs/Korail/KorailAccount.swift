@@ -51,21 +51,23 @@ func login(_ loginData: KorailLoginParameters, completion: @escaping (KorailLogi
         let korailID = loginData.korailID
         let postParams = [
             "Device": "AD",
-            "Version": "231231001",
+            "Version": version,
             "txtInputFlg": "2",
             "txtMemberNo": korailID,
             "txtPwd": encPwd,
             "idx": idx
         ]
         SD.session.request(apiPath("login.Login"), method: .post, parameters: postParams)
-            .responseDecodable(of: KorailLoginResponse.self) { r in
+            .responseDecodable(of: KorailLoginResp.self) { r in
             switch r.result{
             case .success(let value):
                 print("Logged In!")
                 UD.key = value.key
-                completion(value)
+                completion(KorailLoginResponse(state: true, message: value.hMsgTxt, value: value))
             case .failure(let error):
                 print("Error while logging in: \(error.localizedDescription)")
+                debugPrint(r)
+                completion(KorailLoginResponse(state: false, message: "Login Failed", value: nil))
             }
         }
         

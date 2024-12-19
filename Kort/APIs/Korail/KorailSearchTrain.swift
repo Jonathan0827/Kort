@@ -11,10 +11,12 @@ import Alamofire
 struct PassengerCount {
     let adult: Int
     let child: Int
+    let toddler: Int
     let senior: Int
-    init(adult: Int = 0, child: Int = 0, senior: Int = 0) {
+    init(adult: Int = 0, child: Int = 0, toddler: Int = 0, senior: Int = 0) {
         self.adult = adult
         self.child = child
+        self.toddler = toddler
         self.senior = senior
     }
 }
@@ -42,13 +44,14 @@ func SearchKorailTrain(date: String, time: String, dep: korailStations, arr: kor
         "txtSeatAttCd_3": "000",
         "txtSeatAttCd_4": "015",
         "txtTrnGpCd": trainType.rawValue,
-        "Version": "231231001"
+        "Version": version
     ]
     SD.session.request(apiPath("seatMovie.ScheduleView"), method: .get, parameters: params)
 //        .response { response in
 //            debugPrint(response)
 //        }
         .responseDecodable(of: SearchKorailTrainResponse.self) { res in
+//            debugPrint(res)
             switch res.result {
             case .success(let value):
 //                print(value)
@@ -56,11 +59,13 @@ func SearchKorailTrain(date: String, time: String, dep: korailStations, arr: kor
                 var trainInfoArr: [TrainInfo] = [TrainInfo]()
                 for trn in trainDict {
                     let train = trn.compactMapValues { $0 }
-                    trainInfoArr.append(TrainInfo(isReservable: (train["h_rsv_psb_flg"] ?? "" == "Y"), trainFullNm: train["h_trn_clsf_nm"] ?? "", trainShortNm: train["h_trn_gp_nm"] ?? "",trainNo: train["h_trn_no"] ?? "", expDelay: train["h_expct_dlay_hr"] ?? "", genPsbNm: train["h_rsv_psb_nm"] ?? "", spePsbNm: train["h_spe_rsv_psb_nm"] ?? "", speRsv: korailSeatAvailablity(rawValue: train["h_spe_rsv_cd"] ?? "")!, genRsv: korailSeatAvailablity(rawValue: train["h_gen_rsv_cd"] ?? "")!, waitRsv: korailWaitAvailability(rawValue: train["h_wait_rsv_flg"] ?? "")!))
+                    trainInfoArr.append(TrainInfo(isReservable: (train["h_rsv_psb_flg"] ?? "" == "Y"), trainFullNm: train["h_trn_clsf_nm"] ?? "", trainShortNm: train["h_trn_gp_nm"] ?? "",trainNo: train["h_trn_no"] ?? "", trainCode: train["h_trn_clsf_cd"] ?? "",trainGrpCode: train["h_trn_gp_cd"] ?? "",expDelay: train["h_expct_dlay_hr"] ?? "", genPsbNm: train["h_rsv_psb_nm"] ?? "", spePsbNm: train["h_spe_rsv_psb_nm"] ?? "", depDate: train["h_dpt_dt"] ?? "", depTime: train["h_dpt_tm"] ?? "", arrDate: train["h_arv_dt"] ?? "", arrTime: train["h_arv_tm"] ?? "", depCode: train["h_dpt_rs_stn_cd"] ?? "", arrCode: train["h_arv_rs_stn_cd"] ?? "", runDate: train["h_run_dt"] ?? "",speRsv: korailSeatAvailablity(rawValue: train["h_spe_rsv_cd"] ?? "")!, genRsv: korailSeatAvailablity(rawValue: train["h_gen_rsv_cd"] ?? "")!))
                 }
+//                print(trainInfoArr)
                 completion(trainInfoArr)
             case .failure(let error):
                 print(error)
+                debugPrint(res)
             }
         }
 }
@@ -116,22 +121,31 @@ struct TrainInfo {
     let trainFullNm: String
     let trainShortNm: String
     let trainNo: String
+    let trainCode: String
+    let trainGrpCode: String
     let expDelay: String
     let genPsbNm: String
     let spePsbNm: String
+    let depDate: String
+    let depTime: String
+    let arrDate: String
+    let arrTime: String
+    let depCode: String
+    let arrCode: String
+    let runDate: String
     let speRsv: korailSeatAvailablity
     let genRsv: korailSeatAvailablity
-    let waitRsv: korailWaitAvailability
 }
 
 enum korailSeatAvailablity: String {
     case available = "11"
     case soldout = "13"
+    case lack = "12"
     case noseattype = "00"
 }
 
-enum korailWaitAvailability: String {
-    case seatAvailable = "-2"
-    case waitAvailable = "9"
-    case waitSoldOut = "0"
-}
+//enum korailWaitAvailability: String {
+//    case seatAvailable = "-2"
+//    case waitAvailable = " 9"
+//    case waitSoldOut = " 0"
+//}

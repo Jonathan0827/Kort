@@ -9,7 +9,14 @@ import Foundation
 import Alamofire
 
 func getTickets() {
-    SD.session.request(apiPath("myTicket.MyTicketList"), method: .get, parameters: ["Device": "AD", "Version": "231231001", "Key": UD.key])
+    SD.session.request(apiPath("myTicket.MyTicketList"), method: .get, parameters: ["Device": "AD", "Version": version, "Key": UD.key])
+        .response {
+            debugPrint($0)
+        }
+       
+}
+func getReservations() {
+    SD.session.request(apiPath("reservation.ReservationView"), method: .get, parameters: ["Device": "AD", "Version": version, "Key": UD.key])
         .response {
             debugPrint($0)
         }
