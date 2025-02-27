@@ -88,3 +88,11 @@ struct GoodTextField: View {
 enum errors: Error {
     case DecodeError
 }
+struct GoodButton: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label    
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .animation(.spring(duration: 0.2), value: configuration.isPressed)
+            .opacity(configuration.isPressed ? 0.85 : 1.0)
+    }
+}

@@ -48,13 +48,13 @@ func Reserve(_ train: TrainInfo, _ rsvOpt: ReservationOptions, completion: @esca
                 return
             }
         }
-        reserveForReal(train, reserveOption) { r in
+        MakeReservation(train, reserveOption) { r in
             debugPrint(r)
             completion(r)
         }
     }
 }
-func reserveForReal(_ trainInfo: TrainInfo, _ options: RealReservationOptions,completion: @escaping (ReservationResult) -> Void) {
+func MakeReservation(_ trainInfo: TrainInfo, _ options: RealReservationOptions,completion: @escaping (ReservationResult) -> Void) {
     var parameters = [
         "Device": "AD",
         "Version": version,
@@ -107,36 +107,6 @@ func reserveForReal(_ trainInfo: TrainInfo, _ options: RealReservationOptions,co
         parameters["txtCardPw_\(index)"] = ""
         index += 1
     }
-//    var index = 1
-//    while index < options.passengers.adult+1 {
-//        parameters["txtPsgTpCd\(index)"] = "1"
-//        parameters["txtDiscKndCd1\(index)"] = "000"
-//        parameters["txtCompaCnt\(index)"] = "1"
-//        parameters["txtCardCode_\(index)"] = ""
-//        parameters["txtCardNo_\(index)"] = ""
-//        parameters["txtCardPw_\(index)"] = ""
-//        index += 1
-//    }
-//    var index2 = index + 1
-//    while index2 < options.passengers.child + index + 1 {
-//        parameters["txtPsgTpCd\(index2)"] = "3"
-//        parameters["txtDiscKndCd1\(index2)"] = "000"
-//        parameters["txtCompaCnt\(index2)"] = "1"
-//        parameters["txtCardCode_\(index2)"] = ""
-//        parameters["txtCardNo_\(index2)"] = ""
-//        parameters["txtCardPw_\(index2)"] = ""
-//        index2 += 1
-//    }
-//    var index3 = index2
-//    while index3 < options.passengers.adult + index2 + 1{
-//        parameters["txtPsgTpCd\(index)"] = "1"
-//        parameters["txtDiscKndCd1\(index)"] = "131"
-//        parameters["txtCompaCnt\(index)"] = "1"
-//        parameters["txtCardCode_\(index)"] = ""
-//        parameters["txtCardNo_\(index)"] = ""
-//        parameters["txtCardPw_\(index)"] = ""
-//        index3 += 1
-//    }
     print(parameters)
     SD.session.request(apiPath("certification.TicketReservation"), method: .get, parameters: parameters)
         .response { r in
@@ -148,52 +118,9 @@ func reserveForReal(_ trainInfo: TrainInfo, _ options: RealReservationOptions,co
                 print(error)
             }
         }
-}
-enum ReservationCode {
-    case success
-    case error
-    case soldOut
-}
-struct ReservationResult {
-    let code: ReservationCode
-    let rsvInfo: TrainInfo?
-    let additionalInfo: String
-    let moreAdditionalInfo: String
-    init(code: ReservationCode, rsvInfo: TrainInfo? = nil, additionalInfo: String = "", moreAdditionalInfo: String = "") {
-        self.code = code
-        self.rsvInfo = rsvInfo
-        self.additionalInfo = additionalInfo
-        self.moreAdditionalInfo = moreAdditionalInfo
-    }
-}
-enum SeatPref {
-    case generalOnly
-    case generalFirst
-    case specialOnly
-    case specialFirst
-}
-struct ReservationOptions {
-    let seatPref: SeatPref
-    let passengers: PassengerCount
-}
-enum Seats: String {
-    case special = "2"
-    case general = "1"
-}
-struct RealReservationOptions {
-    var seatType: Seats
-    var passengers: PassengerCount
+    
 }
 
-struct Passenger {
-    let typeCode: String
-    let discountType: String
-}
-
-let Adult = Passenger(typeCode: "1", discountType: "000")
-let Child = Passenger(typeCode: "3", discountType: "000")
-let Toddler = Passenger(typeCode: "3", discountType: "321")
-let Senior = Passenger(typeCode: "1", discountType: "131")
 
 func makePassengerArray(_ p: PassengerCount) -> Array<Passenger> {
     var arr = [Passenger]()

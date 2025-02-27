@@ -13,7 +13,7 @@ struct ContentView: View {
     @State private var canBeLoggedIn: Bool = true
     var body: some View {
         VStack {
-            TestView()
+            HomeView()
         }
         .fullScreenCover(isPresented: $canBeLoggedIn.not) {
             LoginView(canBeLoggedIn: $canBeLoggedIn)

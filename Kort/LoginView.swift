@@ -11,6 +11,7 @@ struct LoginView: View {
     @AppStorage("KorailNo") var korailMBNo: String = ""
     @AppStorage("KorailPwd") var korailMBPwd: String = ""
     @State private var tryingLogin: Bool = false
+    @State private var showError: Bool = false
     @Binding var canBeLoggedIn: Bool
     var body: some View {
         NavigationStack {
@@ -21,32 +22,39 @@ struct LoginView: View {
                         .padding(.horizontal)
                     GoodTextField(text: $korailMBPwd, placeholder: "코레일 비밀번호", isSecure: true, focusColor: Color(uiColor: UIColor.systemBlue))
                         .padding(.horizontal)
-                    //                TextField("코레일 회원번호", text: $korailMBNo)
-                    //                    .padding(.horizontal)
-                    //                    .padding(.vertical, 5)
-                    //                    .textFieldStyle(.roundedBorder)
-                    //                    .disableAutocorrection(true)
-                    //                    .autocapitalization(.none)
-                    //                SecureField("코레일 비밀번호", text: $korailMBPwd)
-                    //                    .padding(.horizontal)
-                    //                    .textFieldStyle(.roundedBorder)
-                    //                    .disableAutocorrection(true)
-                    //                    .autocapitalization(.none)
+                    if showError {
+                        Text("회원번호 또는 비밀번호를 확인해주세요")
+                            .foregroundStyle(.red)
+                            .fontWeight(.bold)
+                    }
                     Spacer()
                     Button(action: {
-                        withAnimation {
-//                            tryingLogin = true
-                        }
+                        tryingLogin = true
                         login(KorailLoginParameters(korailID: korailMBNo, korailPwd: korailMBPwd)) { r in
-                            print("done")
                             print(r)
+                            if r.state {
+                                print("Login Successful!")
+                                withAnimation {
+                                    tryingLogin = false
+                                    canBeLoggedIn = true
+                                }
+                            } else {
+                                print("Login fail")
+                                withAnimation {
+                                    tryingLogin = false
+                                    showError = true
+                                }
+                            }
                         }
-                        print("done1")
                     }, label: {
-                        Text("로그인")
-                            .fontWeight(.bold)
-                            .foregroundStyle(!(korailMBNo.isEmpty || korailMBPwd.isEmpty) ? Color.white : Color(UIColor.systemGray2))
-                        
+                        if tryingLogin {
+                            ProgressView()
+                                .progressViewStyle(.circular)
+                        } else {
+                            Text("로그인")
+                                .fontWeight(.bold)
+                                .foregroundStyle(!(korailMBNo.isEmpty || korailMBPwd.isEmpty) ? Color.white : Color(UIColor.systemGray2))
+                        }
                     })
                     
                     .buttonStyle(LoginButtonStyle())

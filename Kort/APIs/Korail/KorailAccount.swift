@@ -17,10 +17,7 @@ import Foundation
 import Alamofire
 import CryptoSwift
 
-struct CurrentUserData {
-    var key = ""
-    var idx = ""
-}
+
 var UD = CurrentUserData()
 
 func pwdEncoder(_ pwdData: String, completion: @escaping (KorailPwdPrms) -> Void) {
@@ -78,12 +75,4 @@ func logout() {
         .response {
             debugPrint($0)
         }
-}
-struct KorailPwdPrms {
-    let password: String
-    let idx: String
-}
-struct KorailLoginParameters {
-    let korailID: String
-    let korailPwd: String
 }

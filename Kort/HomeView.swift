@@ -7,22 +7,33 @@
 
 import SwiftUI
 
-struct TestView: View {
+struct HomeView: View {
     @AppStorage("KorailNo") var korailMBNo: String = ""
     @AppStorage("KorailPwd") var korailMBPwd: String = ""
-    @State private var date: String = ""
-    @State private var time: String = ""
-    @State private var dep: korailStations = .busan
+    @State private var date: String = "20250301"
+    @State private var time: String = "100000"
+    @State private var dep: korailStations = .daejeon
     @State private var arr: korailStations = .seoul
     @State private var console: String = ""
     @State private var trainList: [TrainInfo] = [TrainInfo]()
     @State private var selindx: Int = 0
+    @State private var openReservation: Bool = false
+    @State private var acs: PassengerCount = PassengerCount(adult: 1)
     var body: some View {
         VStack {
             TextField("Korail mb no", text: $korailMBNo)
             TextField("Korail mb pwd", text: $korailMBPwd)
-            TextField("Date yymmdd", text: $date)
+            TextField("Date yyyymmdd", text: $date)
             TextField("Time hhmmss", text: $time)
+            TextField("adult", value: $acs.adult, formatter: NumberFormatter())
+                .keyboardType(.numberPad)
+            TextField("child", value: $acs.child, formatter: NumberFormatter())
+                .keyboardType(.numberPad)
+            TextField("senior", value: $acs.senior, formatter: NumberFormatter())
+                .keyboardType(.numberPad)
+            Button("Open Reserve View") {
+                openReservation = true
+            }
             Button(action: {
                 login(KorailLoginParameters(korailID: korailMBNo, korailPwd: korailMBPwd)) { loginData in
                     console = console + ("-------------<Login Info>-------------\n")
@@ -60,7 +71,7 @@ struct TestView: View {
                 }
             }
             Button(action: {
-                SearchKorailTrain(date: "20241212", time: "000000", dep: .seoul, arr: .haengsin, includeSoldOut: true, includeWaiting: true, passengers: PassengerCount(adult: 1)) {trarr in
+                SearchKorailTrain(date: date, time: time, dep: dep, arr: arr, includeSoldOut: true, includeWaiting: true, passengers: PassengerCount(adult: 1)) {trarr in
                     trainList = trarr
                     for train in trarr {
                         console = console + ("-------------<Train Info>-------------\n")
@@ -89,6 +100,9 @@ struct TestView: View {
             ScrollView {
                 Text("\(console)")
             }
+        }
+        .fullScreenCover(isPresented: $openReservation) {
+            ReserveView(date: date, time: time, acs: acs, from: dep, to: arr, isPresented: $openReservation)
         }
     }
 }
