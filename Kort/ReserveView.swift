@@ -45,9 +45,10 @@ struct ReserveView: View {
                                     Text("🟥")
                                 }
                             })
-                            Text("\(train.trainFullNm): \(train.trainShortNm)\(train.trainNo) 일반석: \(train.genPsbNm.split(separator: "\n")[0]) 특실: \(train.spePsbNm.split(separator: "\n")[0])")
+                            Text("\(train.trainFullNm): \(train.trainShortNm)\(train.trainNo) 일반석: \(train.genPsbNm.split(separator: "\n")[0]) 특실: \(train.spePsbNm.split(separator: "\n")[0]) \(train.depTime) -> \(train.arrTime)")
                             Spacer()
                         }
+                        .padding()
                     }
                 }
                 Button(action: {
