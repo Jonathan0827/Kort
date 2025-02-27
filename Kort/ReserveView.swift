@@ -27,7 +27,7 @@ struct ReserveView: View {
                 Text("Adult: \(acs.adult), Child: \(acs.child), Senior: \(acs.senior)")
                     .font(.caption2)
                 ScrollView {
-                    ForEach(trains, id: \.self.trainNo) { train in
+                    ForEach(trains, id: \.id) { train in
                         HStack {
                             Button(action: {
                                 if selectedTrains.contains(train) {

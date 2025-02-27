@@ -107,7 +107,8 @@ enum korailTrains: String {
     case all = "109"              // 전체
 }
 
-struct TrainInfo: Equatable {
+struct TrainInfo: Equatable, Identifiable {
+    var id = UUID()
     let isReservable: Bool
     let trainFullNm: String
     let trainShortNm: String
