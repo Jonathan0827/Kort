@@ -34,7 +34,6 @@ struct ReserveView: View {
                                     if let index = selectedTrains.firstIndex(of: train) {
                                         selectedTrains.remove(at: index)
                                     }
-
                                 } else {
                                     selectedTrains.append(train)
                                 }
@@ -65,7 +64,7 @@ struct ReserveView: View {
                 }
                 .disabled(selectedTrains.isEmpty)
             }
-            .navigationTitle("Reservation")
+            .navigationTitle("Select Train")
             .toolbar {
                 Button("Close") {
                     isPresented = false

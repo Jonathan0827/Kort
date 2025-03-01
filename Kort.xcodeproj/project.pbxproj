@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		913B498C2D05BF710032FFE6 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 913B498B2D05BF710032FFE6 /* Alamofire */; };
 		913B49912D05D61A0032FFE6 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 913B49902D05D61A0032FFE6 /* CryptoSwift */; };
+		91AB9CA82D715150000F5AC5 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = 91AB9CA72D715150000F5AC5 /* AlertToast */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91AB9CA82D715150000F5AC5 /* AlertToast in Frameworks */,
 				913B498C2D05BF710032FFE6 /* Alamofire in Frameworks */,
 				913B49912D05D61A0032FFE6 /* CryptoSwift in Frameworks */,
 			);
@@ -74,6 +76,7 @@
 			packageProductDependencies = (
 				913B498B2D05BF710032FFE6 /* Alamofire */,
 				913B49902D05D61A0032FFE6 /* CryptoSwift */,
+				91AB9CA72D715150000F5AC5 /* AlertToast */,
 			);
 			productName = Kort;
 			productReference = 913B49792D05BEDA0032FFE6 /* Kort.app */;
@@ -106,6 +109,7 @@
 			packageReferences = (
 				913B498A2D05BF710032FFE6 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				913B498F2D05D61A0032FFE6 /* XCRemoteSwiftPackageReference "CryptoSwift" */,
+				91AB9CA62D715150000F5AC5 /* XCRemoteSwiftPackageReference "AlertToast" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 913B497A2D05BEDA0032FFE6 /* Products */;
@@ -361,6 +365,14 @@
 				minimumVersion = 1.8.3;
 			};
 		};
+		91AB9CA62D715150000F5AC5 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/elai950/AlertToast.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.9;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -373,6 +385,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 913B498F2D05D61A0032FFE6 /* XCRemoteSwiftPackageReference "CryptoSwift" */;
 			productName = CryptoSwift;
+		};
+		91AB9CA72D715150000F5AC5 /* AlertToast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 91AB9CA62D715150000F5AC5 /* XCRemoteSwiftPackageReference "AlertToast" */;
+			productName = AlertToast;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

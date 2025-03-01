@@ -16,7 +16,7 @@
 import Foundation
 import Alamofire
 import CryptoSwift
-
+import AlertToast
 
 var UD = CurrentUserData()
 
@@ -41,7 +41,7 @@ func pwdEncoder(_ pwdData: String, completion: @escaping (KorailPwdPrms) -> Void
                 }
             }
     }
-func login(_ loginData: KorailLoginParameters, completion: @escaping (KorailLoginResponse) -> Void) {
+func KorailLogin(_ loginData: KorailLoginParameters, completion: @escaping (KorailLoginResponse) -> Void) {
     pwdEncoder(loginData.korailPwd) { enc in
         let encPwd = enc.password
         let idx = enc.idx

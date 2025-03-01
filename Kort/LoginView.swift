@@ -6,16 +6,19 @@
 //
 
 import SwiftUI
-
-struct LoginView: View {
+import AlertToast
+struct KorailLoginView: View {
     @AppStorage("KorailNo") var korailMBNo: String = ""
     @AppStorage("KorailPwd") var korailMBPwd: String = ""
     @State private var tryingLogin: Bool = false
     @State private var showError: Bool = false
     @Binding var canBeLoggedIn: Bool
+    @EnvironmentObject var globalState: stobj
     var body: some View {
         NavigationStack {
             ZStack {
+                Color(.goodBG)
+                    .ignoresSafeArea()
                 Spacer()
                 VStack {
                     GoodTextField(text: $korailMBNo, placeholder: "코레일 회원번호", isSecure: false, focusColor: Color(uiColor: UIColor.systemBlue))
@@ -30,15 +33,20 @@ struct LoginView: View {
                     Spacer()
                     Button(action: {
                         tryingLogin = true
-                        login(KorailLoginParameters(korailID: korailMBNo, korailPwd: korailMBPwd)) { r in
+                        KorailLogin(KorailLoginParameters(korailID: korailMBNo, korailPwd: korailMBPwd)) { r in
                             print(r)
                             if r.state {
+                                HapticManager.instance.notification(type: .success)
                                 print("Login Successful!")
                                 withAnimation {
+                                    globalState.toast = AlertToast(displayMode: .hud,type: .complete(.green), title: "로그인 성공!", subTitle: "\(r.value!.strCustNm)으로 로그인 되었습니다")
+                                    globalState.showToast = true
                                     tryingLogin = false
                                     canBeLoggedIn = true
+                                    globalState.finishedFirstKorailLogin = true
                                 }
                             } else {
+                                HapticManager.instance.notification(type: .error)
                                 print("Login fail")
                                 withAnimation {
                                     tryingLogin = false
@@ -51,7 +59,7 @@ struct LoginView: View {
                             ProgressView()
                                 .progressViewStyle(.circular)
                         } else {
-                            Text("로그인")
+                            Text("코레일 계정으로 로그인")
                                 .fontWeight(.bold)
                                 .foregroundStyle(!(korailMBNo.isEmpty || korailMBPwd.isEmpty) ? Color.white : Color(UIColor.systemGray2))
                         }
