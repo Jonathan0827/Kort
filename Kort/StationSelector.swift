@@ -65,13 +65,16 @@ struct StationSelector: View {
                 LazyVGrid(columns: columns) {
                     ForEach(korailStations.allCases, id: \.self) { station in
                         Button(action: {
-                            withAnimation {
+                            
                                 if selectedArrDep == 1 {
-                                    dep = station
+                                    withAnimation {
+                                        dep = station
+                                    }
                                 } else {
-                                    arr = station
+                                    withAnimation {
+                                        arr = station
+                                    }
                                 }
-                            }
                         }, label: {
                             Text(station.rawValue)
                                 .font(.title2)

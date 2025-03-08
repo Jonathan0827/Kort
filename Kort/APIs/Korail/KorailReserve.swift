@@ -107,15 +107,26 @@ func MakeReservation(_ trainInfo: TrainInfo, _ options: RealReservationOptions,c
         parameters["txtCardPw_\(index)"] = ""
         index += 1
     }
-    print(parameters)
+//    print(parameters)
     SD.session.request(apiPath("certification.TicketReservation"), method: .get, parameters: parameters)
         .response { r in
-            debugPrint(r)
+//            debugPrint(r)
             switch r.result {
             case .success(let data):
-                print(data)
+//                print(data)
+                break
             case .failure(let error):
                 print(error)
+                completion(ReservationResult(code: .error))
+                return
+            }
+        }
+        .responseDecodable(of: KorailReservationResponse.self) { res in
+            switch res.result {
+            case .success(let value):
+                completion(ReservationResult(code: .success, strResult: value.hNtisuLmt,reqResult: value))
+            case .failure:
+                completion(ReservationResult(code: .error))
             }
         }
     

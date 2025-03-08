@@ -13,7 +13,7 @@ struct KorailLoginView: View {
     @State private var tryingLogin: Bool = false
     @State private var showError: Bool = false
     @Binding var canBeLoggedIn: Bool
-    @EnvironmentObject var globalState: stobj
+    @EnvironmentObject var globalState: GlobalState
     var body: some View {
         NavigationStack {
             ZStack {

@@ -48,13 +48,14 @@ func SearchKorailTrain(date: String, time: String, dep: korailStations, arr: kor
                 var trainInfoArr: [TrainInfo] = [TrainInfo]()
                 for trn in trainDict {
                     let train = trn.compactMapValues { $0 }
-                    trainInfoArr.append(TrainInfo(isReservable: (train["h_rsv_psb_flg"] ?? "" == "Y"), trainFullNm: train["h_trn_clsf_nm"] ?? "", trainShortNm: train["h_trn_gp_nm"] ?? "",trainNo: train["h_trn_no"] ?? "", trainCode: train["h_trn_clsf_cd"] ?? "",trainGrpCode: train["h_trn_gp_cd"] ?? "",expDelay: train["h_expct_dlay_hr"] ?? "", genPsbNm: train["h_rsv_psb_nm"] ?? "", spePsbNm: train["h_spe_rsv_psb_nm"] ?? "", depDate: train["h_dpt_dt"] ?? "", depTime: train["h_dpt_tm"] ?? "", arrDate: train["h_arv_dt"] ?? "", arrTime: train["h_arv_tm"] ?? "", depCode: train["h_dpt_rs_stn_cd"] ?? "", arrCode: train["h_arv_rs_stn_cd"] ?? "", runDate: train["h_run_dt"] ?? "",speRsv: korailSeatAvailablity(rawValue: train["h_spe_rsv_cd"] ?? "")!, genRsv: korailSeatAvailablity(rawValue: train["h_gen_rsv_cd"] ?? "")!))
+                    trainInfoArr.append(TrainInfo(isReservable: (train["h_rsv_psb_flg"] ?? "" == "Y"), trainFullNm: train["h_trn_clsf_nm"] ?? "", trainShortNm: train["h_trn_gp_nm"] ?? "",trainNo: train["h_trn_no"] ?? "", trainCode: train["h_trn_clsf_cd"] ?? "",trainGrpCode: train["h_trn_gp_cd"] ?? "",expDelay: train["h_expct_dlay_hr"] ?? "", genPsbNm: train["h_rsv_psb_nm"] ?? "", spePsbNm: train["h_spe_rsv_psb_nm"] ?? "", depDate: train["h_dpt_dt"] ?? "", depTime: train["h_dpt_tm"] ?? "", arrDate: train["h_arv_dt"] ?? "", arrTime: train["h_arv_tm"] ?? "", depCode: train["h_dpt_rs_stn_cd"] ?? "", arrCode: train["h_arv_rs_stn_cd"] ?? "", runDate: train["h_run_dt"] ?? "", depStnNm: train["h_dpt_rs_stn_nm"] ?? "", arrStnNm: train["h_arv_rs_stn_nm"] ?? "",speRsv: korailSeatAvailablity(rawValue: train["h_spe_rsv_cd"] ?? "")!, genRsv: korailSeatAvailablity(rawValue: train["h_gen_rsv_cd"] ?? "")!))
                 }
-//                print(trainInfoArr)
+                //                print(trainInfoArr)
                 completion(trainInfoArr)
             case .failure(let error):
                 print(error)
                 debugPrint(res)
+                completion([TrainInfo]())
             }
         }
 }

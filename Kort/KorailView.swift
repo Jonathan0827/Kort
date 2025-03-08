@@ -24,7 +24,7 @@ struct KorailView: View {
     @State private var acs: PassengerCount = PassengerCount(adult: 1)
     @State private var showDateAndTimePicker: Bool = false
     @State private var showStationPicker: Bool = false
-    @EnvironmentObject var globalState: stobj
+    @EnvironmentObject var globalState: GlobalState
     @State private var loginKorail: Bool = true
     @State private var selectedArrDep: Int = 0
     
@@ -238,7 +238,7 @@ struct KorailView: View {
                         .padding(.trailing, -5)
                         Button(action: {
                             withAnimation {
-                                acs.adult -= 1
+                                acs.senior -= 1
                             }
                         }, label: {
                             Text("-")
@@ -292,7 +292,7 @@ struct KorailView: View {
                 timeString = "\(nV)0000"
             }
             .fullScreenCover(isPresented: $openReservation) {
-                ReserveView(date: ymd[0]+ymd[1]+ymd[2], time: timeString, acs: acs, from: dep, to: arr, isPresented: $openReservation)
+                KorailReserveView(date: ymd[0]+ymd[1]+ymd[2], time: timeString, acs: acs, from: dep, to: arr, isPresented: $openReservation)
             }
             .sheet(isPresented: $showDateAndTimePicker){
                 ZStack {
@@ -349,6 +349,7 @@ struct KorailView: View {
                     KorailLogin(KorailLoginParameters(korailID: korailMBNo, korailPwd: korailMBPwd)) { r in
                         loginKorail = r.state
                         if r.state && !globalState.finishedFirstKorailLogin {
+                            print(r.value!.strMBCrdNo)
                             globalState.toast = AlertToast(displayMode: .hud,type: .complete(.green), title: "로그인 성공!", subTitle: "\(r.value!.strCustNm)으로 로그인 되었습니다")
                             globalState.showToast = true
                         }

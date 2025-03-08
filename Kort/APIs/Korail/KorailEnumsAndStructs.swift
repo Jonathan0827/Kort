@@ -29,12 +29,14 @@ struct ReservationResult {
     let additionalInfo: String
     let moreAdditionalInfo: String
     let strResult: String?
-    init(code: ReservationCode, rsvInfo: TrainInfo? = nil, additionalInfo: String = "", moreAdditionalInfo: String = "", strResult: String = "") {
+    let reqResult: KorailReservationResponse?
+    init(code: ReservationCode, rsvInfo: TrainInfo? = nil, additionalInfo: String = "", moreAdditionalInfo: String = "", strResult: String = "", reqResult: KorailReservationResponse? = nil) {
         self.code = code
         self.rsvInfo = rsvInfo
         self.additionalInfo = additionalInfo
         self.moreAdditionalInfo = moreAdditionalInfo
         self.strResult = strResult
+        self.reqResult = reqResult
     }
 }
 enum SeatPref {
@@ -125,6 +127,8 @@ struct TrainInfo: Equatable, Identifiable {
     let depCode: String
     let arrCode: String
     let runDate: String
+    let depStnNm: String
+    let arrStnNm: String
     let speRsv: korailSeatAvailablity
     let genRsv: korailSeatAvailablity
 }

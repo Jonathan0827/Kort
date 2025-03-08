@@ -221,7 +221,8 @@ struct SeatInfos: Codable {
 }
 
 // MARK: - SeatInfo
-struct SeatInfo: Codable {
+struct SeatInfo: Codable, Identifiable {
+    var id = UUID()
     let hDcntKndCd1, hFrbsCD, hSeatAttCD2, hEtcSeatAttCD: String
     let hCERTNo, hCERTDvCD, hSeatFare, hTotDiscAmt: String
     let hDcntKndCDNm1, hDcntKndCd1Nm, hDcntKndCDNm2, hDiscCardUseCnt: String
