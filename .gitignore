@@ -1,1 +1,6 @@
+.DS_Store
+update
+build.sh
+release
 /build
+Kort.xcodeproj/xcuserdata
