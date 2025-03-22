@@ -6,4 +6,4 @@
 - Grab iPA from release
 - Sideload using your favourite method
 ## To-do
-[ ] SRT Support
+- [ ] SRT Support
