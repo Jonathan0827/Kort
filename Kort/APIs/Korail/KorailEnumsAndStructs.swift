@@ -39,11 +39,12 @@ struct ReservationResult {
         self.reqResult = reqResult
     }
 }
-enum SeatPref {
-    case generalOnly
-    case generalFirst
-    case specialOnly
-    case specialFirst
+enum SeatPref: String, Identifiable, CaseIterable {
+    var id: Self { self }
+    case generalOnly = "일반실만"
+    case generalFirst = "일반실 우선"
+    case specialOnly = "특/우등실만"
+    case specialFirst = "특/우등실 우선"
 }
 struct ReservationOptions {
     let seatPref: SeatPref

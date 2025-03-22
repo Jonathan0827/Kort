@@ -21,7 +21,7 @@ struct SCalc: ViewModifier {
         content
             .background(
                 GeometryReader { proxy in
-                    Color.clear // we just want the reader to get triggered, so let's use an empty color
+                    Color.clear
                         .onAppear {
                             size.append(proxy.size)
 //                            print(proxy.size)

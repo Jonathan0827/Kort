@@ -20,6 +20,10 @@ struct KorailReserveView: View {
     @State private var selectedTrains = Array<TrainInfo>()
     @State private var currentLevel: Int = 0
     @State private var showOptions: Bool = false
+    @State private var demo: Bool = false
+    @AppStorage("KorailNo") private var korailMBNo: String = ""
+    @AppStorage("KorailPwd") private var korailMBPwd: String = ""
+    @EnvironmentObject var globalState: GlobalState
     var body: some View {
         NavigationView {
             ZStack {
@@ -222,11 +226,22 @@ struct KorailReserveView: View {
                         }
                         
                     case 1, 2:
-                        RealReservationView(date: date, time: time, acs: acs, from: from, to: to, seatPref: seatPref, selectedTrains: selectedTrains,demo: false, currentLevel: $currentLevel, isPresented: $isPresented)
+                        RealReservationView(date: date, time: time, acs: acs, from: from, to: to, seatPref: seatPref, selectedTrains: selectedTrains,demo: demo, currentLevel: $currentLevel, isPresented: $isPresented)
                     default:
                         Text("Kort")
                     }
                     Spacer()
+                    if demo {
+                        Text("DEMO")
+                            .font(.caption2)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.white)
+                            .padding(5)
+                            .background {
+                                Capsule()
+                                    .fill(.red)
+                            }
+                    }
                     HStack {
                         ForEach(1...3, id: \.self) { level in
                             stepView(for: level)
@@ -235,8 +250,18 @@ struct KorailReserveView: View {
                     .padding(.vertical, 5)
                     if currentLevel == 0 {
                         Button(action: {
-                            withAnimation {
-                                currentLevel = 1
+                            if korailMBNo.isEmpty || korailMBPwd.isEmpty {
+                                globalState.showKorailLogin = true
+                            } else  {
+                                KorailLogin(KorailLoginParameters(korailID: korailMBNo, korailPwd: korailMBPwd)) { r in
+                                    globalState.showKorailLogin = !(r.state)
+                                    if r.state {
+                                        globalState.KorailUserName = r.value!.strCustNm
+                                        withAnimation {
+                                            currentLevel = 1
+                                        }
+                                    }
+                                }
                             }
                         }, label: {
                             Text("선택 완료")
@@ -265,20 +290,16 @@ struct KorailReserveView: View {
                 ZStack {
                     Color(.goodBG)
                         .ignoresSafeArea()
-                    VStack {
-                        HStack {
+                    List {
+                        Section {
                             Picker("좌석 옵션", selection: $seatPref) {
-                                Text("일반실만").tag(SeatPref.generalOnly)
-                                Text("일반실 우선").tag(SeatPref.generalFirst)
-                                Text("특/우등실만").tag(SeatPref.specialOnly)
-                                Text("특/우등실 우선").tag(SeatPref.specialFirst)
+                                ForEach(SeatPref.allCases, id: \.id) { sp in
+                                    Text(sp.rawValue).tag(sp)
+                                }
                             }
-                            .pickerStyle(MenuPickerStyle())
-                            .buttonStyle(GoodButton())
-                            .background {
-                                RoundedRectangle(cornerRadius: 15)
-                                    .fill(Color(.goodGray))
-                            }
+                        }
+                        Section {
+                            Toggle("Demo", isOn: $demo)
                         }
                     }
                 }

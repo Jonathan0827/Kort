@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct StationSelector: View {
+struct KorailStationSelector: View {
     let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
     @Binding var selectedArrDep: Int
     @Binding var dep: korailStations
@@ -65,16 +65,15 @@ struct StationSelector: View {
                 LazyVGrid(columns: columns) {
                     ForEach(korailStations.allCases, id: \.self) { station in
                         Button(action: {
-                            
-                                if selectedArrDep == 1 {
-                                    withAnimation {
-                                        dep = station
-                                    }
-                                } else {
-                                    withAnimation {
-                                        arr = station
-                                    }
+                            if selectedArrDep == 1 {
+                                withAnimation {
+                                    dep = station
                                 }
+                            } else {
+                                withAnimation {
+                                    arr = station
+                                }
+                            }
                         }, label: {
                             Text(station.rawValue)
                                 .font(.title2)

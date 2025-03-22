@@ -93,7 +93,8 @@ struct GoodTabBar: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 25)
-                .fill(Color(uiColor: .systemGray6))
+//                .fill(Color(uiColor: .systemGray6))
+                .fill(Color(.goodGray))
                 .frame(height: 50)
                 .padding(.vertical, 20)
                 .padding(.horizontal, 15)
@@ -139,4 +140,19 @@ struct tabbartabs: Identifiable, Equatable {
     let label: String
     let image: String
     let color: Color
+}
+struct LoginButtonStyle: ButtonStyle {
+    @AppStorage("KorailNo") var korailMBNo: String = ""
+    @AppStorage("KorailPwd") var korailMBPwd: String = ""
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .frame(width: 360, height: 60)
+            .background {
+                RoundedRectangle(cornerRadius: 15, style: .continuous)
+                    .fill(!(korailMBNo.isEmpty || korailMBPwd.isEmpty) ? Color(UIColor.systemBlue) : Color(UIColor.systemGray5))
+            }
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .animation(.spring(duration: 0.2), value: configuration.isPressed)
+            .opacity(configuration.isPressed ? 0.85 : 1.0)
+    }
 }

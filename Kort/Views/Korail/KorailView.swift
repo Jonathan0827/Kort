@@ -1,5 +1,5 @@
 //
-//  TestView.swift
+//  KorailView.swift
 //  Kort
 //
 //  Created by 임준협 on 12/11/24.
@@ -153,8 +153,10 @@ struct KorailView: View {
                         .buttonStyle(GoodButton())
                         .padding(.trailing, -5)
                         Button(action: {
-                            withAnimation {
-                                acs.adult -= 1
+                            if acs.adult != 0 {
+                                withAnimation {
+                                    acs.adult -= 1
+                                }
                             }
                         }, label: {
                             Text("-")
@@ -195,8 +197,10 @@ struct KorailView: View {
                         .buttonStyle(GoodButton())
                         .padding(.trailing, -5)
                         Button(action: {
-                            withAnimation {
-                                acs.child -= 1
+                            if acs.child != 0 {
+                                withAnimation {
+                                    acs.child -= 1
+                                }
                             }
                         }, label: {
                             Text("-")
@@ -237,8 +241,10 @@ struct KorailView: View {
                         .buttonStyle(GoodButton())
                         .padding(.trailing, -5)
                         Button(action: {
-                            withAnimation {
-                                acs.senior -= 1
+                            if acs.senior != 0 {
+                                withAnimation {
+                                    acs.senior -= 1
+                                }
                             }
                         }, label: {
                             Text("-")
@@ -252,7 +258,7 @@ struct KorailView: View {
                                 }
                         })
                         .buttonStyle(GoodButton())
-                    
+                        
                     }
                 }
                 .padding(.horizontal, 20)
@@ -264,7 +270,8 @@ struct KorailView: View {
                     HStack {
                         Spacer()
                         Text("열차 조회")
-//                            .font(.title3)
+                            .foregroundStyle(.white)
+                        //                            .font(.title3)
                             .fontWeight(.semibold)
                         Spacer()
                     }
@@ -299,8 +306,8 @@ struct KorailView: View {
                     Color(.goodBG)
                         .ignoresSafeArea()
                     DateAndTimeSelector(date: $date, time: $time, showDateAndTimeSelector: $showDateAndTimePicker)
-                    .padding()
-                    .saveSize(in: $calSize)
+                        .padding()
+                        .saveSize(in: $calSize)
                 }
                 .presentationDetents(
                     calSize.first.map { [.height($0.height)] } ?? [.medium]
@@ -308,9 +315,9 @@ struct KorailView: View {
                 .presentationCornerRadius(20)
                 .presentationDragIndicator(.visible)
             }
-            .fullScreenCover(isPresented: $loginKorail.not) {
-                KorailLoginView(canBeLoggedIn: $loginKorail)
-            }
+            //            .fullScreenCover(isPresented: $loginKorail.not) {
+            //                KorailLoginView(canBeLoggedIn: $loginKorail)
+            //            }
             .sheet(isPresented: $showStationPicker, onDismiss: {
                 withAnimation {
                     selectedArrDep = 0
@@ -319,23 +326,13 @@ struct KorailView: View {
                 ZStack {
                     Color(.goodBG)
                         .ignoresSafeArea()
-                    StationSelector(selectedArrDep: $selectedArrDep, dep: $dep, arr: $arr)
-                    .padding(.top)
+                    KorailStationSelector(selectedArrDep: $selectedArrDep, dep: $dep, arr: $arr)
+                        .padding(.top)
                 }
                 .presentationDetents([.medium])
                 .presentationCornerRadius(20)
                 .presentationDragIndicator(.visible)
             }
-//            .onChange(of: korailMBNo) { oV, nV in
-//                if nV.isEmpty {
-//                    loginKorail = false
-//                }
-//            }
-//            .onChange(of: korailMBPwd) { oV, nV in
-//                if nV.isEmpty {
-//                    loginKorail = false
-//                }
-//            }
             .onChange(of: selectedArrDep) { oV, nV in
                 showStationPicker = (nV != 0)
             }
@@ -343,14 +340,12 @@ struct KorailView: View {
                 let df = DateFormatter()
                 df.dateFormat = "HH"
                 time = df.string(from: Date())
-                if korailMBNo.isEmpty || korailMBPwd.isEmpty {
-                    loginKorail = false
-                } else  {
+                if !(korailMBNo.isEmpty || korailMBPwd.isEmpty) {
                     KorailLogin(KorailLoginParameters(korailID: korailMBNo, korailPwd: korailMBPwd)) { r in
-                        loginKorail = r.state
                         if r.state && !globalState.finishedFirstKorailLogin {
                             print(r.value!.strMBCrdNo)
                             globalState.toast = AlertToast(displayMode: .hud,type: .complete(.green), title: "로그인 성공!", subTitle: "\(r.value!.strCustNm)으로 로그인 되었습니다")
+                            globalState.KorailUserName = r.value!.strCustNm
                             globalState.showToast = true
                         }
                         globalState.finishedFirstKorailLogin = r.state

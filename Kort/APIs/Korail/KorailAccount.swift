@@ -17,30 +17,22 @@ import Foundation
 import Alamofire
 import CryptoSwift
 import AlertToast
+import SwiftUI
 
 var UD = CurrentUserData()
 
 func pwdEncoder(_ pwdData: String, completion: @escaping (KorailPwdPrms) -> Void) {
     SD.session.request(apiPath("common.code.do"), method: .post, parameters: ["code": "app.login.cphd"])
         .responseDecodable(of: KorailEncPwdResponse.self) { response in
-                switch response.result {
-                case .success(let result):
-                    do {
-                        let exPwd = Array(pwdData.utf8)
-                        let idx = result.appLoginCphd.idx
-                        let key = Array(result.appLoginCphd.key.utf8)
-                        let iv = Array(String(result.appLoginCphd.key.prefix(16)).utf8)
-                        let aes = try AES(key: key, blockMode: CBC(iv: iv), padding: .pkcs7)
-                        let encPwd = try aes.encrypt(exPwd).toBase64().data(using: .utf8)?.base64EncodedString()
-                        completion(KorailPwdPrms(password: encPwd ?? "", idx: idx))
-                    } catch {
-                        print("Couldn't encrypt password: \(error.localizedDescription)")
-                    }
-                case .failure(let error):
-                    print("Couldn't fetch AES data: \(error.localizedDescription)")
-                }
+            switch response.result {
+            case .success(let result):
+                let encPwd = AES(data: pwdData, key: result.appLoginCphd.key, iv: String(result.appLoginCphd.key.prefix(16))).encrypt()
+                completion(KorailPwdPrms(password: encPwd, idx: result.appLoginCphd.idx))
+            case .failure(let error):
+                print("Couldn't fetch AES data: \(error.localizedDescription)")
             }
-    }
+        }
+}
 func KorailLogin(_ loginData: KorailLoginParameters, completion: @escaping (KorailLoginResponse) -> Void) {
     pwdEncoder(loginData.korailPwd) { enc in
         let encPwd = enc.password
@@ -70,7 +62,7 @@ func KorailLogin(_ loginData: KorailLoginParameters, completion: @escaping (Kora
         
     }
 }
-func logout() {
+func KorailLogout() {
     SD.session.request(apiPath("common.logout"), method: .get)
         .response {
             debugPrint($0)

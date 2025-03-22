@@ -110,7 +110,7 @@ func MakeReservation(_ trainInfo: TrainInfo, _ options: RealReservationOptions,c
 //    print(parameters)
     SD.session.request(apiPath("certification.TicketReservation"), method: .get, parameters: parameters)
         .response { r in
-//            debugPrint(r)
+            debugPrint(r)
             switch r.result {
             case .success(let data):
 //                print(data)
@@ -126,7 +126,7 @@ func MakeReservation(_ trainInfo: TrainInfo, _ options: RealReservationOptions,c
             case .success(let value):
                 completion(ReservationResult(code: .success, strResult: value.hNtisuLmt,reqResult: value))
             case .failure:
-                completion(ReservationResult(code: .error))
+                completion(ReservationResult(code: .error, strResult: "FAIL"))
             }
         }
     
