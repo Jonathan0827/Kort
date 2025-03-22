@@ -20,13 +20,13 @@ struct SettingsView: View {
                     Section(header: Label("Korail 계정", systemImage: "person.circle")) {
                         if !(korailMBNo == "" || korailMBPwd == "") {
                             Button(action: {
-                                showKorailAccountInformation = true
+//                                showKorailAccountInformation = true
                             }, label: {
                                 HStack {
                                     Text("\(globalState.KorailUserName)")
                                     Spacer()
-                                    Image(systemName: "arrow.up.right")
-                                        .foregroundStyle(.secondary)
+//                                    Image(systemName: "arrow.up.right")
+//                                        .foregroundStyle(.secondary)
                                 }
                                 .fontWeight(.bold)
                             })
