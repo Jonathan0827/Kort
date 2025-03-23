@@ -9,8 +9,6 @@ import SwiftUI
 import AlertToast
 
 struct KorailView: View {
-    @AppStorage("KorailNo") var korailMBNo: String = ""
-    @AppStorage("KorailPwd") var korailMBPwd: String = ""
     @State private var date: Date = Date()
     @State private var time: String = "00"
     @State private var ymd: [String] = ["0000","00","00"]
@@ -315,9 +313,6 @@ struct KorailView: View {
                 .presentationCornerRadius(20)
                 .presentationDragIndicator(.visible)
             }
-            //            .fullScreenCover(isPresented: $loginKorail.not) {
-            //                KorailLoginView(canBeLoggedIn: $loginKorail)
-            //            }
             .sheet(isPresented: $showStationPicker, onDismiss: {
                 withAnimation {
                     selectedArrDep = 0
@@ -340,10 +335,11 @@ struct KorailView: View {
                 let df = DateFormatter()
                 df.dateFormat = "HH"
                 time = df.string(from: Date())
-                if !(korailMBNo.isEmpty || korailMBPwd.isEmpty) {
-                    KorailLogin(KorailLoginParameters(korailID: korailMBNo, korailPwd: korailMBPwd)) { r in
+                if !(isKorailLoginEmpty()) {
+                    KorailLogin() { r in
                         if r.state && !globalState.finishedFirstKorailLogin {
                             print(r.value!.strMBCrdNo)
+                            print(r.value!.strMBCrdNo == korailMBNo())
                             globalState.toast = AlertToast(displayMode: .hud,type: .complete(.green), title: "로그인 성공!", subTitle: "\(r.value!.strCustNm)으로 로그인 되었습니다")
                             globalState.KorailUserName = r.value!.strCustNm
                             globalState.showToast = true

@@ -25,7 +25,7 @@ func SearchKorailTrain(date: String, time: String, dep: korailStations, arr: kor
         "txtMenuId": "11",
         "txtPsgFlg_1": "\(passengers.adult)",
         "txtPsgFlg_2": "\(passengers.child)",
-        "txtPsgFlg_8": "0",
+//        "txtPsgFlg_8": "0",
         "txtPsgFlg_3": "\(passengers.senior)",
         "txtPsgFlg_4": "0",
         "txtPsgFlg_5": "0",

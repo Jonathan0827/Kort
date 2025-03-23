@@ -8,9 +8,6 @@ import SwiftUI
 import AlertToast
 
 struct ContentView: View {
-    @AppStorage("KorailNo") private var korailMBNo: String = ""
-    @AppStorage("KorailPwd") private var korailMBPwd: String = ""
-
     @State private var tabSelection: Int = 0
     @StateObject private var globalState = GlobalState()
 

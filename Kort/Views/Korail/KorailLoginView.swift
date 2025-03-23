@@ -8,8 +8,8 @@
 import SwiftUI
 import AlertToast
 struct KorailLoginView: View {
-    @AppStorage("KorailNo") var korailMBNo: String = ""
-    @AppStorage("KorailPwd") var korailMBPwd: String = ""
+    @State private var korailMBNo: String = ""
+    @State private var korailMBPwd: String = ""
     @State private var tryingLogin: Bool = false
     @State private var showError: Bool = false
     @EnvironmentObject var globalState: GlobalState
@@ -58,6 +58,7 @@ struct KorailLoginView: View {
                         KorailLogin(KorailLoginParameters(korailID: korailMBNo, korailPwd: korailMBPwd)) { r in
                             print(r)
                             if r.state {
+                                saveKorailLogin([korailMBNo, korailMBPwd])
                                 HapticManager.instance.notification(type: .success)
                                 print("Login Successful!")
                                 withAnimation {
@@ -88,7 +89,7 @@ struct KorailLoginView: View {
                         }
                     })
                     
-                    .buttonStyle(LoginButtonStyle())
+                    .buttonStyle(LoginButtonStyle(korailMBNo: $korailMBNo, korailPwd: $korailMBPwd))
                     .padding()
                     .padding(.bottom, 20)
                     .disabled(korailMBNo.isEmpty || korailMBPwd.isEmpty || tryingLogin)

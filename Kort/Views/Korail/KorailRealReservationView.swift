@@ -19,7 +19,7 @@ struct RealReservationView: View {
     @State private var DONE = false
     @State private var attempt = 0
     @State private var stat = ""
-    @State private var reservedTrain: ReservationResult? = nil
+    @Binding var reservedTrain: ReservationResult?
     @State private var runFunction: Bool = true
     @Binding var currentLevel: Int
     @Binding var isPresented: Bool
@@ -34,24 +34,26 @@ struct RealReservationView: View {
                             .font(.largeTitle)
                             .fontWeight(.heavy)
                         Spacer()
-                        Button(action: {
-                            runFunction = false
-                            isPresented = false
-                        }, label: {
-                            Text("\(DONE ? "완료" : "취소")")
-                                .font(.caption)
-                                .fontWeight(.bold)
-                                .padding(.vertical, 7)
-                                .padding(.horizontal, 15)
-                                .background {
-                                    Capsule()
-                                        .fill(Color(.cprimary))
-                                }
-                                .foregroundStyle(Color(.mode))
-                        })
-                        .buttonStyle(GoodButton())
+                        if !DONE {
+                            Button(action: {
+                                runFunction = false
+                                isPresented = false
+                            }, label: {
+                                Image(systemName: "xmark")
+                                    .font(.caption)
+                                    .fontWeight(.bold)
+                                    .padding(7)
+                                    .background {
+                                        Capsule()
+                                            .fill(Color(.cprimary))
+                                    }
+                                    .foregroundStyle(Color(.mode))
+                            })
+                            .buttonStyle(GoodButton())
+                        }
                     }
                     .padding(.horizontal)
+                    .padding(.top, 30)
                     if !DONE {
                         HStack {
                             Spacer()
@@ -211,9 +213,6 @@ struct RealReservationView: View {
                                 .padding(.vertical, 3)
                             }
                         }
-                        if DONE {
-                            Text("LetsKorail 또는 KorailTalk 앱에서 결제를 진행해 주세요")
-                        }
                     }
                 }
             }
@@ -292,11 +291,14 @@ struct RealReservationView: View {
                                                     print("\(journey.hTrnNo)")
                                                     print("-------------------------------")
                                                     reservedTrain = r
-                                                    withAnimation {
-                                                        DONE = true
-                                                        stat = "done"
-                                                        currentLevel = 2
-                                                    }
+                                                    DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
+                                                        withAnimation {
+                                                            DONE = true
+                                                            
+                                                            stat = "done"
+                                                            currentLevel = 2
+                                                        }
+                                                    })
                                                 }
                                             }
                                         }
@@ -309,18 +311,19 @@ struct RealReservationView: View {
                 }
             } else {
                 // Demo
-                let demoData = ReservationResult(code: ReservationCode.success, rsvInfo: nil, additionalInfo: "", moreAdditionalInfo: "", strResult: "2025년 3월 8일 19시 57분 이내 미결제시 승차권이 자동으로 취소됩니다.", reqResult: KorailReservationResponse(hAcntApvNo: "00000000000", hNtisuLmtDt: "20250308", hPsgCnt: "0002", hMsgTxt: "결제하지 않으면 예약이 취소됩니다.", psgDiscAddInfos: PsgDiscAddInfos(psgDiscAddInfo: []), hPayCnt: "000", hPnrNo: "", hWctNo: "82002", hSeatAttDiscFlg: "", hPreStlTgtFlg: "Y", hDlayApvFlg: "", hTmpJobSqno1: "004899", hPayLimitMsg: "", hTmpJobSqno2: "000000", hNtisuLmtTm: "195748", jrnyInfos: JrnyInfos(jrnyInfo: [JrnyInfo(hJrnyTpCD: "11", hDptDt: "20250318", lumpStlTgtNo: "", hArvTm: "212700", hTotSeatCnt: "00002", seatInfos: SeatInfos(seatInfo: [SeatInfo(hDcntKndCd1: "000", hFrbsCD: "", hSeatAttCD2: "009", hEtcSeatAttCD: "", hCERTNo: "", hCERTDvCD: "", hSeatFare: "00000000000000", hTotDiscAmt: "00000000000", hDcntKndCDNm1: "", hDcntKndCd1Nm: "", hDcntKndCDNm2: "", hDiscCardUseCnt: "000000000", hDirSeatAttCD: "009", hDiscCardReCnt: "000000000", hSmkSeatAttCD: "", hPsrmClNm: "일반실", hDcntKndCd2Nm: "", hSeatPrc: "00000000008400", hDcntKndCd2: "000", hBkclsCD: "", hPsrmClCD: "1", hSeatNo: "5A", hDcntReldNo: "", hMoviePsrmFlg: "", hContSeatCnt: "0001", hLOCSeatAttCD: "012", hRqSeatAttCD: "015", hSGRNm: "", hDiscCardKnd: "", hRcvdAmt: "00000008400", hPsgTpCD: "1", hSrcarNo: "0005"), SeatInfo(hDcntKndCd1: "000", hFrbsCD: "", hSeatAttCD2: "009", hEtcSeatAttCD: "", hCERTNo: "", hCERTDvCD: "", hSeatFare: "00000000000000", hTotDiscAmt: "00000000000", hDcntKndCDNm1: "", hDcntKndCd1Nm: "", hDcntKndCDNm2: "", hDiscCardUseCnt: "000000000", hDirSeatAttCD: "009", hDiscCardReCnt: "000000000", hSmkSeatAttCD: "", hPsrmClNm: "일반실", hDcntKndCd2Nm: "", hSeatPrc: "00000000008400", hDcntKndCd2: "000", hBkclsCD: "", hPsrmClCD: "1", hSeatNo: "5B", hDcntReldNo: "", hMoviePsrmFlg: "", hContSeatCnt: "0001", hLOCSeatAttCD: "013", hRqSeatAttCD: "015", hSGRNm: "", hDiscCardKnd: "", hRcvdAmt: "00000008400", hPsgTpCD: "1", hSrcarNo: "0005")]), hTrnClsfCD: "07", hTrnNo: "195", hArvRsStnNm: "서울", hDptRsStnCD: "0390", hDptTm: "211000", hFresCnt: "00000", hSeatCnt: "000002", hObFlg: "", hTrnGpCD: "100", hDptRsStnNm: "행신", hTrnClsfNm: "KTX-산천", hArvRsStnCD: "0001", hTotStndCnt: "00000")]), hJrnyCnt: "0001", hLunchboxChgFlg: "", hMsgCD: "IRR000018", psgInfos: PsgInfos(psgInfo: [PsgInfo(hDcspNo2: "", hDcspNo: "", hDcntKndCD: "", hPsgInfoPerPrnb: "0001", hPsgTpCD: "1", hDcntKndCd2: ""), PsgInfo(hDcspNo2: "", hDcspNo: "", hDcntKndCD: "", hPsgInfoPerPrnb: "0001", hPsgTpCD: "1", hDcntKndCd2: "")]), hMsgMndry: "", hGuide: "※ 인터넷특가할인은 인터넷 또는 코레일톡에서만 할인이 적용되며, 예약 즉시 결제·발권하셔야 합니다.\n할인승차권을 역 창구에서 변경 시 할인이 취소될 수 있습니다.\n\n와이파이(WiFi) 서비스는 KTX에서 이용하실 수 있습니다.", hAddSrvFlg: "Y", strResult: "SUCC", hTableFlg: "", hDiscCnt: "0000", hDiscCrdReisuFlg: "", hFmlyInfoCfmFlg: "", hMsgTxt2: "", hMsgTxt3: "", hDlayApvTxt: "", hMsgTxt4: "", hMsgTxt5: "결제하지 않으면 예약이 취소됩니다.", hTotRcvdAmt: "0000000000016800", hNtisuLmt: "2025년 3월 8일 19시 57분 이내 미결제시 승차권이 자동으로 취소됩니다."))
                 Task {
                     while runFunction {
                         attempt += 1
                         if attempt == 3 {
-                            withAnimation {
-                                runFunction = false
-                                reservedTrain = demoData
-                                DONE = true
-                                stat = "done"
-                                currentLevel = 2
-                            }
+                            runFunction = false
+                            reservedTrain = demoReservation
+                            DispatchQueue.main.asyncAfter(deadline: .now()+0.1, execute: {
+                                withAnimation {
+                                    DONE = true
+                                    stat = "done"
+                                    currentLevel = 2
+                                }
+                            })
                         }
                         try? await Task.sleep(nanoseconds: 1_500_000_000)
                     }

@@ -13,16 +13,19 @@ struct KorailReserveView: View {
     let acs: PassengerCount
     let from: korailStations
     let to: korailStations
-    @State private var seatPref: SeatPref = .generalFirst
     @Binding var isPresented: Bool
-    @State private var loading: Bool = true
-    @State private var trains = Array<TrainInfo>()
-    @State private var selectedTrains = Array<TrainInfo>()
+    @State private var seatPref: SeatPref = .generalFirst
     @State private var currentLevel: Int = 0
     @State private var showOptions: Bool = false
+    @State private var trains = Array<TrainInfo>()
+    @State private var selectedTrains = Array<TrainInfo>()
     @State private var demo: Bool = false
-    @AppStorage("KorailNo") private var korailMBNo: String = ""
-    @AppStorage("KorailPwd") private var korailMBPwd: String = ""
+    @State private var reservedTrain: ReservationResult? = nil
+    @State private var card: Card = Card(available: false)
+    @State private var paymentInProgress: Bool = false
+    @State private var showPaymentResult: Bool = false
+    @State private var complete: Bool = false
+    @State private var PaymentResult: KorailPaymentResult = KorailPaymentResult()
     @EnvironmentObject var globalState: GlobalState
     var body: some View {
         NavigationView {
@@ -32,201 +35,11 @@ struct KorailReserveView: View {
                 VStack {
                     switch currentLevel {
                     case 0:
-                        VStack {
-                            HStack {
-                                Text("열차 예매")
-                                    .font(.largeTitle)
-                                    .fontWeight(.heavy)
-                                Spacer()
-                                Button(action: {
-                                    showOptions = true
-                                }, label: {
-                                    Text("옵션 변경")
-                                        .font(.caption)
-                                        .fontWeight(.bold)
-                                        .padding(.vertical, 7)
-                                        .padding(.horizontal, 10)
-                                        .background {
-                                            Capsule()
-                                                .fill(Color(.cprimary))
-                                        }
-                                        .foregroundStyle(Color(.mode))
-                                })
-                                .buttonStyle(GoodButton())
-                                Button(action: {
-                                    isPresented = false
-                                }, label: {
-                                    //                            Text("취소")
-                                    Image(systemName: "xmark")
-                                        .font(.caption)
-                                        .fontWeight(.bold)
-                                        .padding(7)
-                                    //                                .padding(.vertical, 5)
-                                        .background {
-                                            Capsule()
-                                                .fill(Color(.cprimary))
-                                        }
-                                        .foregroundStyle(Color(.mode))
-                                })
-                                .buttonStyle(GoodButton())
-                            }
-                            .padding(.horizontal)
-                            .padding(.top, 30)
-                            if loading {
-                                VStack {
-                                    Spacer()
-                                    ProgressView()
-                                        .progressViewStyle(.circular)
-                                        .padding()
-                                    Text("열차 조회 중")
-                                        .foregroundStyle(.gray)
-                                    Spacer()
-                                }
-                            } else if trains.isEmpty {
-                                VStack {
-                                    Spacer()
-                                    Text("조회된 열차가 없습니다")
-                                        .font(.title)
-                                        .fontWeight(.black)
-                                        .foregroundStyle(.gray)
-                                    Spacer()
-                                }
-                            } else {
-                                ScrollView {
-                                    ForEach(trains, id: \.id) { train in
-                                        Button(action: {
-                                            if selectedTrains.contains(train) {
-                                                if let index = selectedTrains.firstIndex(of: train) {
-                                                    withAnimation {
-                                                        selectedTrains.remove(at: index)
-                                                    }
-                                                }
-                                            } else {
-                                                withAnimation {
-                                                    selectedTrains.append(train)
-                                                }
-                                            }
-                                        }, label: {
-                                            HStack {
-                                                VStack {
-                                                    HStack {
-                                                        Text("\(train.trainShortNm)\(train.trainNo)")
-                                                            .font(.title3)
-                                                            .fontWeight(.bold)
-                                                        Spacer()
-                                                    }
-                                                    
-                                                    HStack {
-                                                        
-                                                        Text("\(train.trainFullNm)")
-                                                            .font(.caption2)
-                                                        Spacer()
-                                                    }
-                                                    HStack {
-                                                        VStack {
-                                                            Text("\(train.depStnNm)")
-                                                                .fontWeight(.bold)
-                                                            Text("\(train.depTime.prefix(2))시 \(train.depTime.dropFirst(2).prefix(2))분")
-                                                                .font(.caption)
-                                                        }
-                                                        Image(systemName: "arrow.right.circle.dotted")
-                                                            .resizable()
-                                                            .frame(width: 20, height: 20)
-                                                            .symbolRenderingMode(.palette)
-                                                        //                                                .symbolEffect(.pulse)
-                                                            .foregroundStyle(.primary, .blue)
-                                                        VStack {
-                                                            Text("\(train.arrStnNm)")
-                                                                .fontWeight(.bold)
-                                                            Text("\(train.arrTime.prefix(2))시 \(train.arrTime.dropFirst(2).prefix(2))분")
-                                                                .font(.caption)
-                                                        }
-                                                        Spacer()
-                                                    }
-                                                }
-                                                VStack(alignment: .leading) {
-                                                    Text("일반실")
-                                                        .font(.headline)
-                                                        .fontWeight(.bold)
-                                                    Text("\(train.genPsbNm.split(separator: "\n")[0])")
-                                                        .font(.caption)
-                                                        .fontWeight(.bold)
-                                                    ZStack(alignment: .leading) {
-                                                        Text("\(train.genRsv == .soldout ? "매진" : "예매 가능")")
-                                                            .font(.caption)
-                                                            .fontWeight(.bold)
-                                                        Text("00,000원") //align
-                                                            .font(.caption)
-                                                            .foregroundStyle(.clear)
-                                                    }
-                                                }
-                                                VStack(alignment: .leading) {
-                                                    Text("특/우등")
-                                                        .font(.headline)
-                                                        .fontWeight(.bold)
-                                                    if train.speRsv == .noseattype {
-                                                        Text("-")
-                                                            .font(.caption)
-                                                            .fontWeight(.bold)
-                                                        Text("00,000원") //align
-                                                            .font(.caption)
-                                                            .foregroundStyle(.clear)
-                                                    } else {
-                                                        Text("\(train.spePsbNm.split(separator: "\n")[0])")
-                                                            .font(.caption)
-                                                            .fontWeight(.bold)
-                                                        ZStack(alignment: .leading) {
-                                                            Text("\(train.speRsv == .soldout ? "매진" : "예매 가능")")
-                                                                .font(.caption)
-                                                                .fontWeight(.bold)
-                                                            Text("00,000원") //align
-                                                                .font(.caption)
-                                                                .foregroundStyle(.clear)
-                                                        }
-                                                    }
-                                                }
-                                                Spacer()
-                                            }
-                                            .padding()
-                                            .background {
-                                                RoundedRectangle(cornerRadius: 15)
-                                                    .fill(Color(.goodGray))
-                                                    .shadow(color: .blue.opacity(selectedTrains.contains(train) ? 1.0 : 0), radius: 5)
-                                            }
-                                            .overlay {
-                                                if train.speRsv == .noseattype && seatPref == .specialOnly {
-                                                    ZStack {
-                                                        RoundedRectangle(cornerRadius: 15)
-                                                            .fill(Color(.goodGray).opacity(0.9))
-                                                        Text("이 열차는 선택된 좌석 옵션(\(getStringFromSeatPref()))을 충족하지 않습니다")
-                                                            .font(.caption)
-                                                            .fontWeight(.bold)
-                                                    }
-                                                    .onAppear {
-                                                        if selectedTrains.contains(train) {
-                                                            if let index = selectedTrains.firstIndex(of: train) {
-                                                                withAnimation {
-                                                                    selectedTrains.remove(at: index)
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        })
-                                        .disabled(train.speRsv == .noseattype && seatPref == .specialOnly)
-                                        .buttonStyle(GoodButton())
-                                        .padding(.horizontal)
-                                        .padding(.vertical, 5)
-                                    }
-                                }
-                                .padding(.top, -15)
-                            }
-                            
-                        }
-                        
+                        KorailTrainSelector(showOptions: $showOptions, isPresented: $isPresented, seatPref: $seatPref, trains: $trains, selectedTrains: $selectedTrains, date: date, time: time, acs: acs, from: from, to: to)
                     case 1, 2:
-                        RealReservationView(date: date, time: time, acs: acs, from: from, to: to, seatPref: seatPref, selectedTrains: selectedTrains,demo: demo, currentLevel: $currentLevel, isPresented: $isPresented)
+                        RealReservationView(date: date, time: time, acs: acs, from: from, to: to, seatPref: seatPref, selectedTrains: selectedTrains,demo: demo, reservedTrain: $reservedTrain,currentLevel: $currentLevel, isPresented: $isPresented)
+                    case 3, 4:
+                        KorailPaymentView(train: reservedTrain, demo: demo, isPresented: $isPresented, selectedCard: $card, complete: $complete, result: $PaymentResult)
                     default:
                         Text("Kort")
                     }
@@ -250,10 +63,10 @@ struct KorailReserveView: View {
                     .padding(.vertical, 5)
                     if currentLevel == 0 {
                         Button(action: {
-                            if korailMBNo.isEmpty || korailMBPwd.isEmpty {
+                            if isKorailLoginEmpty() {
                                 globalState.showKorailLogin = true
                             } else  {
-                                KorailLogin(KorailLoginParameters(korailID: korailMBNo, korailPwd: korailMBPwd)) { r in
+                                KorailLogin() { r in
                                     globalState.showKorailLogin = !(r.state)
                                     if r.state {
                                         globalState.KorailUserName = r.value!.strCustNm
@@ -267,7 +80,7 @@ struct KorailReserveView: View {
                             Text("선택 완료")
                                 .fontWeight(.bold)
                                 .foregroundStyle(!selectedTrains.isEmpty ? Color.white : Color.gray)
-                                .frame(width: 360, height: 60)
+                                .frame(width: 360, height: 50)
                                 .background {
                                     RoundedRectangle(cornerRadius: 15, style: .continuous)
                                         .fill(!selectedTrains.isEmpty ? Color(UIColor.systemBlue) : Color(.goodGray))
@@ -275,17 +88,102 @@ struct KorailReserveView: View {
                         })
                         .buttonStyle(GoodButton())
                         .disabled(selectedTrains.isEmpty)
+                    } else if currentLevel == 2 {
+                        HStack {
+                            Button(action: {
+                                isPresented = false
+                            }, label: {
+                                Text("끝내기")
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(Color.blue)
+                                    .frame(width: 175, height: 50)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 15, style: .continuous)
+                                            .fill(Color.blue.opacity(0.2))
+                                    }
+                            })
+                            .buttonStyle(GoodButton())
+                            Button(action: {
+                                withAnimation {
+                                    currentLevel = 3
+                                }
+                            }, label: {
+                                Text("결재 진행")
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(Color.white)
+                                    .frame(width: 175, height: 50)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 15, style: .continuous)
+                                            .fill(Color.blue)
+                                    }
+                            })
+                            .buttonStyle(GoodButton())
+                        }
+                    } else if currentLevel == 3 {
+                        Button(action: {
+                            withAnimation {
+                                paymentInProgress = true
+                            }
+                            if !demo {
+                                KorailPayInApp(reservedTrain!.reqResult!, payment: card) { r in
+                                    print(r)
+                                    PaymentResult = r
+                                    withAnimation {
+                                        paymentInProgress = false
+                                        complete = true
+                                        currentLevel = 4
+                                    }
+                                }
+                            } else {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                                    PaymentResult = demoPayment
+                                    withAnimation {
+                                        paymentInProgress = false
+                                        complete = true
+                                        currentLevel = 4
+                                    }
+                                })
+                            }
+                        }, label: {
+                            if paymentInProgress {
+                                ProgressView()
+                                    .foregroundStyle(Color.white)
+                                    .frame(width: 360, height: 50)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 15, style: .continuous)
+                                            .fill(Color.gray)
+                                    }
+                            } else {
+                                Text("결제")
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(Color.white)
+                                    .frame(width: 360, height: 50)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 15, style: .continuous)
+                                            .fill(card.available ? Color.blue : Color.gray)
+                                    }
+                            }
+                        })
+                        .disabled(paymentInProgress || !(card.available))
+                        .buttonStyle(GoodButton())
+                    } else if currentLevel == 4 {
+                        Button(action: {
+                            isPresented = false
+                        }, label: {
+                            Text("완료")
+                                .fontWeight(.bold)
+                                .foregroundStyle(Color.white)
+                                .frame(width: 360, height: 50)
+                                .background {
+                                    RoundedRectangle(cornerRadius: 15, style: .continuous)
+                                        .fill(Color.blue)
+                                }
+                        })
+                        .buttonStyle(GoodButton())
                     }
                 }
             }
-            .onAppear {
-                SearchKorailTrain(date: date, time: time, dep: from, arr: to, includeSoldOut: true, includeWaiting: true, passengers: acs) { r in
-                    trains = r
-                    withAnimation {
-                        loading = false
-                    }
-                }
-            }
+            
             .sheet(isPresented: $showOptions) {
                 ZStack {
                     Color(.goodBG)
@@ -299,13 +197,16 @@ struct KorailReserveView: View {
                             }
                         }
                         Section {
-                            Toggle("Demo", isOn: $demo)
+                            Toggle("Demo 활성화", isOn: $demo)
                         }
                     }
                 }
                 .presentationDetents([.medium])
                 .presentationCornerRadius(20)
                 .presentationDragIndicator(.visible)
+            }
+            .sheet(isPresented: $showPaymentResult) {
+                
             }
         }
     }
@@ -320,18 +221,6 @@ struct KorailReserveView: View {
                 .font(.headline)
             Text(titles[level - 1])
                 .font(.caption2)
-        }
-    }
-    private func getStringFromSeatPref() -> String {
-        switch seatPref {
-        case .generalOnly:
-            return "일반실만"
-        case .generalFirst:
-            return "일반실 우선"
-        case .specialOnly:
-            return "특/우등실만"
-        case .specialFirst:
-            return "특/우등실 우선"
         }
     }
 }

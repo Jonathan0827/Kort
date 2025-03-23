@@ -152,3 +152,14 @@ struct CurrentUserData {
     var key = ""
     var idx = ""
 }
+
+struct KorailPaymentResult {
+    let result: Bool
+    let msg: String
+    let res: KorailPaymentResponse?
+    init(result: Bool = false, msg: String = "", res: KorailPaymentResponse? = nil) {
+        self.result = result
+        self.msg = msg
+        self.res = res
+    }
+}

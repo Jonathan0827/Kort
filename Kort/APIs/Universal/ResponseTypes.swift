@@ -300,6 +300,227 @@ struct PsgInfo: Codable {
         case hDcntKndCd2 = "h_dcnt_knd_cd2"
     }
 }
+// MARK: Payment
+struct KorailPaymentResponse: Codable {
+    let hStlAmt, hTotFare, hChildCnt, hStlTpCD: String
+    let hMsgTxt, hRsvNo, hIMFlg, hTradeGbn: String
+    let hSurveyText, hSurveyURL, hStlCDApprvNo, hTotDiscAmt: String
+    let hTotPrc, hWctNo, hMixStlDv, hAdultCnt: String
+    let hSurveyTitle: String
+    let stlInfos: StlInfos
+    let hTblSeatCnt, hStlCnt, hDiscCardCnt, hCustNo: String
+    let hSurveyFlg, hMBCrdNo, hMsgCD: String
+    let tblSeatInfos: TblSeatInfos
+    let strResult, hCNCFee, hTkCnt, hBigo: String
+    let tkInfos: TkInfos
+    let hBuyName, hTotStlAmt, hPublEndNo, hTotRcvdAmt: String
+    let hPublStartNo: String
+
+    enum CodingKeys: String, CodingKey {
+        case hStlAmt = "h_stl_amt"
+        case hTotFare = "h_tot_fare"
+        case hChildCnt = "h_child_cnt"
+        case hStlTpCD = "h_stl_tp_cd"
+        case hMsgTxt = "h_msg_txt"
+        case hRsvNo = "h_rsv_no"
+        case hIMFlg = "h_im_flg"
+        case hTradeGbn = "h_trade_gbn"
+        case hSurveyText = "h_survey_text"
+        case hSurveyURL = "h_survey_url"
+        case hStlCDApprvNo = "h_stl_cd_apprv_no"
+        case hTotDiscAmt = "h_tot_disc_amt"
+        case hTotPrc = "h_tot_prc"
+        case hWctNo = "h_wct_no"
+        case hMixStlDv = "h_mix_stl_dv"
+        case hAdultCnt = "h_adult_cnt"
+        case hSurveyTitle = "h_survey_title"
+        case stlInfos = "stl_infos"
+        case hTblSeatCnt = "h_tbl_seat_cnt"
+        case hStlCnt = "h_stl_cnt"
+        case hDiscCardCnt = "h_disc_card_cnt"
+        case hCustNo = "h_cust_no"
+        case hSurveyFlg = "h_survey_flg"
+        case hMBCrdNo = "h_mb_crd_no"
+        case hMsgCD = "h_msg_cd"
+        case tblSeatInfos = "tbl_seat_infos"
+        case strResult
+        case hCNCFee = "h_cnc_fee"
+        case hTkCnt = "h_tk_cnt"
+        case hBigo = "h_bigo"
+        case tkInfos = "tk_infos"
+        case hBuyName = "h_buy_name"
+        case hTotStlAmt = "h_tot_stl_amt"
+        case hPublEndNo = "h_publ_end_no"
+        case hTotRcvdAmt = "h_tot_rcvd_amt"
+        case hPublStartNo = "h_publ_start_no"
+    }
+}
+
+// MARK: - StlInfos
+struct StlInfos: Codable {
+    let stlInfo: [StlInfo]
+
+    enum CodingKeys: String, CodingKey {
+        case stlInfo = "stl_info"
+    }
+}
+
+// MARK: - StlInfo
+struct StlInfo: Codable {
+    let hStlAmt, hRemnantAmt, hVanCorpCD, hStlTpCD: String
+    let hRmtPoint, hTxnPrprNo, hStlRlt, hApvDt: String
+    let hCrdCorpCD, hCrdStlCnt, hApvNo, hXpointApvNo: String
+    let hMsgCD, hStlSqno, hXpointCerDv, hXpointNo: String
+    let hApvTm, hTrGubun, hStlCrdNo, hXpointDv: String
+    let hCTLCD, hScrnMsg, hCrdCorpNm, hAcntFlg: String
+    let hCrdTmlNo, hOvsCrdFlg, hInstMonth, hChainStCD: String
+
+    enum CodingKeys: String, CodingKey {
+        case hStlAmt = "h_stl_amt"
+        case hRemnantAmt = "h_remnant_amt"
+        case hVanCorpCD = "h_van_corp_cd"
+        case hStlTpCD = "h_stl_tp_cd"
+        case hRmtPoint = "h_rmt_point"
+        case hTxnPrprNo = "h_txn_prpr_no"
+        case hStlRlt = "h_stl_rlt"
+        case hApvDt = "h_apv_dt"
+        case hCrdCorpCD = "h_crd_corp_cd"
+        case hCrdStlCnt = "h_crd_stl_cnt"
+        case hApvNo = "h_apv_no"
+        case hXpointApvNo = "h_xpoint_apv_no"
+        case hMsgCD = "h_msg_cd"
+        case hStlSqno = "h_stl_sqno"
+        case hXpointCerDv = "h_xpoint_cer_dv"
+        case hXpointNo = "h_xpoint_no"
+        case hApvTm = "h_apv_tm"
+        case hTrGubun = "h_tr_gubun"
+        case hStlCrdNo = "h_stl_crd_no"
+        case hXpointDv = "h_xpoint_dv"
+        case hCTLCD = "h_ctl_cd"
+        case hScrnMsg = "h_scrn_msg"
+        case hCrdCorpNm = "h_crd_corp_nm"
+        case hAcntFlg = "h_acnt_flg"
+        case hCrdTmlNo = "h_crd_tml_no"
+        case hOvsCrdFlg = "h_ovs_crd_flg"
+        case hInstMonth = "h_inst_month"
+        case hChainStCD = "h_chain_st_cd"
+    }
+}
+
+// MARK: - TblSeatInfos
+struct TblSeatInfos: Codable {
+    let tblSeatInfo: [JSONAny]
+
+    enum CodingKeys: String, CodingKey {
+        case tblSeatInfo = "tbl_seat_info"
+    }
+}
+
+// MARK: - TkInfos
+struct TkInfos: Codable {
+    let tkInfo: [TkInfo]
+
+    enum CodingKeys: String, CodingKey {
+        case tkInfo = "tk_info"
+    }
+}
+
+// MARK: - TkInfo
+struct TkInfo: Codable {
+    let hTrnClsfCDNm1, hTrnClsfCDNm2, hSeatData1, hSeatData2: String
+    let hDlayFlg, hBz5FareDiscAmt, hArvRsStnNmKor2, hArvRsStnNmKor1: String
+    let hTotDiscAmt, hTrnGpNm1, hTrnGpNm2, hTrnGpCD: String
+    let tkDcntInfo: [TkDcntInfo]
+    let hSeatNo1, hPsrmClCDNm2, hSeatNo2, hDiscKndCDNm: String
+    let hPsrmClCDNm1, hJrnyTpCD, hStdSeatPrcFare, hDVDAnxDvCd1: String
+    let hTkFare, hDVDAnxDvCd2, hDptRsStnNmKor2, hDptRsStnNmKor1: String
+    let hTkSttCDNm, hTkRetPwd, hTkKndCDNm, hPsgTpCDNm: String
+    let hSaleSqno, hCntrtEntNm, hDdckScarNo2, hJrnyTpCDNm: String
+    let hDiscCardGbnNm, hDdckScarNo1, hTkRetNo, hArvTm2: String
+    let hArvRsStnNmEng1, hArvTm1, hSrcarNo1, hArvRsStnNmEng2: String
+    let hDptTm1, hDptTm2, hBz6FareDiscAmt, hDiscCardNo: String
+    let hSrcarNo2, hTakeName, hTkSqno, hSaleDt: String
+    let hTrnNo2, hTrnNo1, hTrnGpCd1, hTkPrc: String
+    let hDturFlg1, hDturFlg2, hArvDt1, hArvDt2: String
+    let hBigo, hAbrdDt2, hDptRsStnNmEng1, hAbrdDt1: String
+    let hDptRsStnNmEng2, hTotRcvdAmt, hTkReasonNm: String
+
+    enum CodingKeys: String, CodingKey {
+        case hTrnClsfCDNm1 = "h_trn_clsf_cd_nm1"
+        case hTrnClsfCDNm2 = "h_trn_clsf_cd_nm2"
+        case hSeatData1 = "h_seat_data1"
+        case hSeatData2 = "h_seat_data2"
+        case hDlayFlg = "h_dlay_flg"
+        case hBz5FareDiscAmt = "h_bz5_fare_disc_amt"
+        case hArvRsStnNmKor2 = "h_arv_rs_stn_nm_kor2"
+        case hArvRsStnNmKor1 = "h_arv_rs_stn_nm_kor1"
+        case hTotDiscAmt = "h_tot_disc_amt"
+        case hTrnGpNm1 = "h_trn_gp_nm1"
+        case hTrnGpNm2 = "h_trn_gp_nm2"
+        case hTrnGpCD = "h_trn_gp_cd"
+        case tkDcntInfo = "tk_dcnt_info"
+        case hSeatNo1 = "h_seat_no1"
+        case hPsrmClCDNm2 = "h_psrm_cl_cd_nm2"
+        case hSeatNo2 = "h_seat_no2"
+        case hDiscKndCDNm = "h_disc_knd_cd_nm"
+        case hPsrmClCDNm1 = "h_psrm_cl_cd_nm1"
+        case hJrnyTpCD = "h_jrny_tp_cd"
+        case hStdSeatPrcFare = "h_std_seat_prc_fare"
+        case hDVDAnxDvCd1 = "h_dvd_anx_dv_cd1"
+        case hTkFare = "h_tk_fare"
+        case hDVDAnxDvCd2 = "h_dvd_anx_dv_cd2"
+        case hDptRsStnNmKor2 = "h_dpt_rs_stn_nm_kor2"
+        case hDptRsStnNmKor1 = "h_dpt_rs_stn_nm_kor1"
+        case hTkSttCDNm = "h_tk_stt_cd_nm"
+        case hTkRetPwd = "h_tk_ret_pwd"
+        case hTkKndCDNm = "h_tk_knd_cd_nm"
+        case hPsgTpCDNm = "h_psg_tp_cd_nm"
+        case hSaleSqno = "h_sale_sqno"
+        case hCntrtEntNm = "h_cntrt_ent_nm"
+        case hDdckScarNo2 = "h_ddck_scar_no2"
+        case hJrnyTpCDNm = "h_jrny_tp_cd_nm"
+        case hDiscCardGbnNm = "h_disc_card_gbn_nm"
+        case hDdckScarNo1 = "h_ddck_scar_no1"
+        case hTkRetNo = "h_tk_ret_no"
+        case hArvTm2 = "h_arv_tm2"
+        case hArvRsStnNmEng1 = "h_arv_rs_stn_nm_eng1"
+        case hArvTm1 = "h_arv_tm1"
+        case hSrcarNo1 = "h_srcar_no1"
+        case hArvRsStnNmEng2 = "h_arv_rs_stn_nm_eng2"
+        case hDptTm1 = "h_dpt_tm1"
+        case hDptTm2 = "h_dpt_tm2"
+        case hBz6FareDiscAmt = "h_bz6_fare_disc_amt"
+        case hDiscCardNo = "h_disc_card_no"
+        case hSrcarNo2 = "h_srcar_no2"
+        case hTakeName = "h_take_name"
+        case hTkSqno = "h_tk_sqno"
+        case hSaleDt = "h_sale_dt"
+        case hTrnNo2 = "h_trn_no2"
+        case hTrnNo1 = "h_trn_no1"
+        case hTrnGpCd1 = "h_trn_gp_cd1"
+        case hTkPrc = "h_tk_prc"
+        case hDturFlg1 = "h_dtur_flg1"
+        case hDturFlg2 = "h_dtur_flg2"
+        case hArvDt1 = "h_arv_dt1"
+        case hArvDt2 = "h_arv_dt2"
+        case hBigo = "h_bigo"
+        case hAbrdDt2 = "h_abrd_dt2"
+        case hDptRsStnNmEng1 = "h_dpt_rs_stn_nm_eng1"
+        case hAbrdDt1 = "h_abrd_dt1"
+        case hDptRsStnNmEng2 = "h_dpt_rs_stn_nm_eng2"
+        case hTotRcvdAmt = "h_tot_rcvd_amt"
+        case hTkReasonNm = "h_tk_reason_nm"
+    }
+}
+
+// MARK: - TkDcntInfo
+struct TkDcntInfo: Codable {
+    let hDcntKndCDNm: String
+
+    enum CodingKeys: String, CodingKey {
+        case hDcntKndCDNm = "h_dcnt_knd_cd_nm"
+    }
+}
 
 // MARK: - Encode/decode helpers
 

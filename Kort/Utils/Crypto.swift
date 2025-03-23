@@ -6,11 +6,10 @@
 //
 
 import Foundation
+import CryptoKit
+import LocalAuthentication
 import CryptoSwift
 class AES {
-//    var dataD: Data = Data()
-//    var keyD: Data = Data()
-//    var ivD: Data = Data()
     var dataB: [UInt8]
     var keyB: [UInt8]
     var ivB: [UInt8]
@@ -32,9 +31,6 @@ class AES {
         }
     }
     func decrypt() throws -> String {
-//        guard let dataD = Data(base64Encoded: self.) else {
-//            return ""
-//        }
         let decrypted = try self.aes.decrypt(dataB)
         let decryptedData = Data(bytes: decrypted, count: decrypted.count)
         guard let decryptedString = String(data: decryptedData, encoding: .utf8) else {

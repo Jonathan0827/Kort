@@ -33,7 +33,7 @@ func pwdEncoder(_ pwdData: String, completion: @escaping (KorailPwdPrms) -> Void
             }
         }
 }
-func KorailLogin(_ loginData: KorailLoginParameters, completion: @escaping (KorailLoginResponse) -> Void) {
+func KorailLogin(_ loginData: KorailLoginParameters = KorailLoginParameters(korailID: korailMBNo(), korailPwd: korailPwd()), completion: @escaping (KorailLoginResponse) -> Void) {
     pwdEncoder(loginData.korailPwd) { enc in
         let encPwd = enc.password
         let idx = enc.idx

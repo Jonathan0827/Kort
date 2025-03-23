@@ -26,7 +26,7 @@ struct DateAndTimeSelector: View {
                 .padding(.top, -10)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
-                    ForEach(0...24, id: \.self) { h in
+                    ForEach(0...23, id: \.self) { h in
                         Button(action: {
                             withAnimation {
                                 time = h < 10 ? "0\(h)" : "\(h)"
